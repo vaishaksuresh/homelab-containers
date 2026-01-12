@@ -1,0 +1,28 @@
+# Container data directories (too large for git)
+adguardhome/
+pihole/
+nginx-proxy-manager/
+syncthing/
+home-assistant/
+homebridge/
+watchtower/
+
+# Backup files
+backups/
+*.tar
+*.tar.gz
+
+# Temporary files
+*.log
+*.tmp
+.DS_Store
+
+# Sensitive files
+*.key
+*.pem
+*password*
+
+# Keep directory structure
+!.gitkeep
+!*/
+!*/.gitkeep

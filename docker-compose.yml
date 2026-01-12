@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  adguard:
+    image: adguard/adguardhome:latest
+    container_name: adguardhome
+    restart: unless-stopped
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - NET_BIND_SERVICE
+    volumes:
+      - ./adguardhome/workdir:/opt/adguardhome/work
+      - ./adguardhome/confdir:/opt/adguardhome/conf
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.30
+
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole-docker
+    restart: unless-stopped
+    environment:
+      TZ: 'America/Los_Angeles'
+      WEBPASSWORD: 'changeme'
+    volumes:
+      - ./pihole/etc-pihole:/etc/pihole
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.31
+
+  nginx-proxy:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
+    restart: unless-stopped
+    volumes:
+      - ./nginx-proxy-manager/data:/data
+      - ./nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.200
+
+  syncthing:
+    image: linuxserver/syncthing:latest
+    container_name: Syncthing
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+    volumes:
+      - ./syncthing/config:/config
+      - /share/CACHEDEV1_DATA/Syncthing:/data
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.50
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.254
+
+  home-assistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home-assistant
+    restart: unless-stopped
+    privileged: true
+    volumes:
+      - ./home-assistant/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.123
+
+  homebridge:
+    image: homebridge/homebridge:latest
+    container_name: homebridge
+    restart: unless-stopped
+    volumes:
+      - ./homebridge:/homebridge
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.124
+
+networks:
+  macvlan_services:
+    driver: macvlan
+    driver_opts:
+      parent: eth0
+    ipam:
+      config:
+        - subnet: 10.0.20.0/24
+          gateway: 10.0.20.1
