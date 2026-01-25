@@ -86,6 +86,30 @@ services:
     networks:
       macvlan_services:
         ipv4_address: 10.0.20.124
+  # ============================================
+  # REMOTE ACCESS
+  # ============================================
+  rustdesk-hbbs:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbs
+    restart: unless-stopped
+    command: hbbs -r 10.0.20.151:21117
+    volumes:
+      - ./rustdesk/hbbs:/root
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.150
+
+  rustdesk-hbbr:
+    image: rustdesk/rustdesk-server:latest
+    container_name: rustdesk-hbbr
+    restart: unless-stopped
+    command: hbbr
+    volumes:
+      - ./rustdesk/hbbr:/root
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.151
 
 networks:
   macvlan_services:
