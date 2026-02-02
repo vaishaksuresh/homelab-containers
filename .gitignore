@@ -6,6 +6,9 @@ syncthing/
 home-assistant/
 homebridge/
 watchtower/
+rustdesk/
+homarr/
+uptime-kuma/
 
 # Backup files
 backups/

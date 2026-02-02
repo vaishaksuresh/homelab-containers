@@ -16,6 +16,9 @@ mkdir -p syncthing/config
 mkdir -p home-assistant/config
 mkdir -p homebridge
 mkdir -p watchtower
+mkdir -p rustdesk/{hbbs,hbbr}
+mkdir -p homarr/{configs,icons,data}
+mkdir -p uptime-kuma
 mkdir -p backups
 
 echo "✓ Directories created"

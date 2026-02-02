@@ -260,6 +260,11 @@ tar -czf manual-backup.tar.gz \
   pihole/ \
   syncthing/ \
   nginx-proxy-manager/ \
+  home-assistant/ \
+  homebridge/ \
+  rustdesk/ \
+  homarr/ \
+  uptime-kuma/ \
   docker-compose.yml
 ```
 
@@ -352,7 +357,7 @@ echo "=== Container Status ==="
 docker compose ps
 
 echo -e "\n=== Container IPs ==="
-for container in adguardhome pihole-docker nginx-proxy-manager Syncthing home-assistant homebridge; do
+for container in adguardhome pihole-docker nginx-proxy-manager Syncthing home-assistant homebridge rustdesk-hbbs rustdesk-hbbr homarr uptime-kuma watchtower; do
     ip=$(docker inspect $container 2>/dev/null | grep '"IPAddress"' | tail -1 | cut -d'"' -f4)
     echo "$container: $ip"
 done
