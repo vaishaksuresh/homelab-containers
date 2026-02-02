@@ -67,10 +67,14 @@ This migration gives each container its own IP address.
    ```
    AdGuard Home:    10.0.20.30
    Pi-hole:         10.0.20.31
-   nginx Proxy:     10.0.20.200
    Syncthing:       10.0.20.50
+   Homarr:          10.0.20.60
+   Uptime Kuma:     10.0.20.61
    Home Assistant:  10.0.20.123
    Homebridge:      10.0.20.124
+   Rustdesk HBBS:   10.0.20.150
+   Rustdesk HBBR:   10.0.20.151
+   nginx Proxy:     10.0.20.200
    Watchtower:      10.0.20.254
    ```
 

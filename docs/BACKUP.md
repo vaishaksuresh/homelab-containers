@@ -43,6 +43,9 @@ Backups stored in: `backups/YYYYMMDD_HHMMSS/`
 - **Syncthing** configuration (not synced data)
 - **Homebridge** configuration and accessories
 - **Home Assistant** configuration (if using bind mount)
+- **Rustdesk** HBBS and HBBR server data
+- **Homarr** configs, icons, and data
+- **Uptime Kuma** monitoring data
 
 ### Docker Volumes (Full Backup)
 - **nginx Proxy Manager** data (proxy configurations)
@@ -64,6 +67,10 @@ backups/20260111_140530/
 ├── syncthing.tar.gz             # Syncthing config
 ├── homebridge.tar.gz            # Homebridge config
 ├── home-assistant.tar.gz        # Home Assistant config
+├── rustdesk-hbbs.tar.gz         # Rustdesk signal server data
+├── rustdesk-hbbr.tar.gz         # Rustdesk relay server data
+├── homarr.tar.gz                # Homarr dashboard config
+├── uptime-kuma.tar.gz           # Uptime Kuma monitoring data
 ├── nginx-data-volume.tar.gz     # nginx Proxy Manager data
 ├── nginx-letsencrypt-volume.tar.gz  # SSL certificates
 ├── homeassistant-volume.tar.gz  # HA database (if using volume)
@@ -201,6 +208,9 @@ If you lose the NAS or need to rebuild from scratch:
    mkdir -p home-assistant/config
    mkdir -p homebridge
    mkdir -p watchtower
+   mkdir -p rustdesk/{hbbs,hbbr}
+   mkdir -p homarr/{configs,icons,data}
+   mkdir -p uptime-kuma
    ```
 
 4. **Restore from backup**

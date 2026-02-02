@@ -69,6 +69,10 @@ restore_bind_mount "pihole" "pihole"
 restore_bind_mount "syncthing" "syncthing"
 restore_bind_mount "homebridge" "homebridge"
 restore_bind_mount "home-assistant" "home-assistant"
+restore_bind_mount "rustdesk-hbbs" "rustdesk/hbbs"
+restore_bind_mount "rustdesk-hbbr" "rustdesk/hbbr"
+restore_bind_mount "homarr" "homarr"
+restore_bind_mount "uptime-kuma" "uptime-kuma"
 
 # Restore Docker volumes (if they exist)
 restore_docker_volume "nginx-data" "nginx-volume"

@@ -15,11 +15,15 @@ Docker Compose setup for homelab services using macvlan networking on QNAP NAS.
 |---------|------------|-------|-------------|
 | AdGuard Home | 10.0.20.30 | 53, 3000, 80 | DNS server with ad blocking |
 | Pi-hole | 10.0.20.31 | 53, 80 | Alternative DNS server |
-| nginx Proxy Manager | 10.0.20.200 | 80, 81, 443 | Reverse proxy with SSL termination |
 | Syncthing | 10.0.20.50 | 8384, 22000 | File synchronization |
+| Homarr | 10.0.20.60 | 7575 | Homelab dashboard |
+| Uptime Kuma | 10.0.20.61 | 3001 | Uptime monitoring & status page |
 | Home Assistant | 10.0.20.123 | 8123 | Home automation platform |
 | Homebridge | 10.0.20.124 | 8581 | HomeKit bridge |
-| Watchtower | 10.0.20.254 | - | Automatic container updates |
+| Rustdesk HBBS | 10.0.20.150 | 21115-21119 | Remote desktop signal server |
+| Rustdesk HBBR | 10.0.20.151 | 21116, 21117 | Remote desktop relay server |
+| nginx Proxy Manager | 10.0.20.200 | 80, 81, 443 | Reverse proxy with SSL termination |
+| Watchtower | 10.0.20.254 | - | Automatic container updates (Discord alerts) |
 
 ## 🚀 Quick Start
 
@@ -46,6 +50,9 @@ mkdir -p syncthing/config
 mkdir -p home-assistant/config
 mkdir -p homebridge
 mkdir -p watchtower
+mkdir -p rustdesk/{hbbs,hbbr}
+mkdir -p homarr/{configs,icons,data}
+mkdir -p uptime-kuma
 
 # Start containers
 docker compose up -d

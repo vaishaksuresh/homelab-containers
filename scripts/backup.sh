@@ -52,6 +52,10 @@ backup_bind_mount "pihole" "pihole"
 backup_bind_mount "syncthing" "syncthing"
 backup_bind_mount "homebridge" "homebridge"
 backup_bind_mount "home-assistant" "home-assistant"
+backup_bind_mount "rustdesk-hbbs" "rustdesk/hbbs"
+backup_bind_mount "rustdesk-hbbr" "rustdesk/hbbr"
+backup_bind_mount "homarr" "homarr"
+backup_bind_mount "uptime-kuma" "uptime-kuma"
 
 # Backup Docker volumes (if they exist)
 backup_docker_volume "nginx-data" "nginx-volume"
@@ -74,6 +78,9 @@ Containers Backed Up:
 - Syncthing
 - Home Assistant
 - Homebridge
+- Rustdesk (HBBS + HBBR)
+- Homarr
+- Uptime Kuma
 
 Files:
 $(ls -lh "$BACKUP_DIR")

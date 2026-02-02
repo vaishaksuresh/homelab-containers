@@ -32,10 +32,14 @@ This setup uses Docker's **macvlan** networking mode, which allows containers to
 │  │  │                                          │    │  │
 │  │  │  AdGuard:        10.0.20.30             │    │  │
 │  │  │  Pi-hole:        10.0.20.31             │    │  │
-│  │  │  nginx Proxy:    10.0.20.200            │    │  │
 │  │  │  Syncthing:      10.0.20.50             │    │  │
+│  │  │  Homarr:         10.0.20.60             │    │  │
+│  │  │  Uptime Kuma:    10.0.20.61             │    │  │
 │  │  │  Home Assistant: 10.0.20.123            │    │  │
 │  │  │  Homebridge:     10.0.20.124            │    │  │
+│  │  │  Rustdesk HBBS:  10.0.20.150            │    │  │
+│  │  │  Rustdesk HBBR:  10.0.20.151            │    │  │
+│  │  │  nginx Proxy:    10.0.20.200            │    │  │
 │  │  │  Watchtower:     10.0.20.254            │    │  │
 │  │  └─────────────────────────────────────────┘    │  │
 │  │                                                   │  │
@@ -124,6 +128,9 @@ If using VLANs, ensure firewall rules allow:
 Containers on macvlan can communicate directly with each other:
 - nginx (10.0.20.200) → AdGuard (10.0.20.30) ✅
 - nginx (10.0.20.200) → Home Assistant (10.0.20.123) ✅
+- nginx (10.0.20.200) → Homarr (10.0.20.60) ✅
+- nginx (10.0.20.200) → Uptime Kuma (10.0.20.61) ✅
+- Rustdesk HBBS (10.0.20.150) → Rustdesk HBBR (10.0.20.151) ✅
 
 No special configuration needed!
 

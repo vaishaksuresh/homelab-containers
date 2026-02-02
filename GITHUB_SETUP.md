@@ -83,8 +83,10 @@ docker compose ps
 docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"
 
 # Test services
-curl http://10.0.20.30  # AdGuard
-curl http://10.0.20.200:81  # nginx Proxy Manager
+curl http://10.0.20.30       # AdGuard
+curl http://10.0.20.200:81   # nginx Proxy Manager
+curl http://10.0.20.60:7575  # Homarr
+curl http://10.0.20.61:3001  # Uptime Kuma
 ```
 
 ## 7. Future Updates
@@ -111,9 +113,10 @@ After download, you'll have:
 ```
 homelab-containers/
 ├── README.md              # Main documentation
+├── GITHUB_SETUP.md        # This file
 ├── LICENSE                # MIT License
 ├── .gitignore            # Git ignore rules
-├── docker-compose.yml    # Container configuration
+├── docker-compose.yml    # Container configuration (11 services)
 ├── setup.sh              # Initial setup script
 ├── docs/
 │   ├── NETWORK.md        # Network architecture
