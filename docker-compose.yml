@@ -1,6 +1,33 @@
 version: '3.8'
 
 services:
+
+# macvlan shim setup - must run first
+  macvlan-shim:
+    image: alpine:latest
+    container_name: macvlan-shim
+    network_mode: host
+    privileged: true
+    restart: unless-stopped
+    command: >
+      sh -c "
+      ip link delete macvlan-shim 2>/dev/null || true &&
+      ip link add macvlan-shim link eth0 type macvlan mode bridge &&
+      ip addr add 10.0.20.199/32 dev macvlan-shim &&
+      ip link set macvlan-shim up &&
+      sysctl -w net.ipv4.conf.all.proxy_arp=1 &&
+      sysctl -w net.ipv4.conf.eth0.proxy_arp=1 &&
+      sysctl -w net.ipv4.conf.macvlan-shim.proxy_arp=1 &&
+      sysctl -w net.ipv4.conf.all.forwarding=1 &&
+      ip route add 10.0.20.16/28 dev macvlan-shim 2>/dev/null || true &&
+      ip route add 10.0.20.48/28 dev macvlan-shim 2>/dev/null || true &&
+      ip route add 10.0.20.64/26 dev macvlan-shim 2>/dev/null || true &&
+      ip route add 10.0.20.144/28 dev macvlan-shim 2>/dev/null || true &&
+      ip route add 10.0.20.192/28 dev macvlan-shim 2>/dev/null || true &&
+      ip route add 10.0.20.240/28 dev macvlan-shim 2>/dev/null || true &&
+      echo 'macvlan shim created' &&
+      tail -f /dev/null
+      "
   adguard:
     image: adguard/adguardhome:latest
     container_name: adguardhome
@@ -36,24 +63,27 @@ services:
     volumes:
       - ./nginx-proxy-manager/data:/data
       - ./nginx-proxy-manager/letsencrypt:/etc/letsencrypt
+    dns:              # ADD THIS
+      - 10.0.20.30
+      - 1.1.1.1
     networks:
       macvlan_services:
         ipv4_address: 10.0.20.200
 
-  syncthing:
-    image: linuxserver/syncthing:latest
-    container_name: Syncthing
-    restart: unless-stopped
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=America/Los_Angeles
-    volumes:
-      - ./syncthing/config:/config
-      - /share/CACHEDEV1_DATA/Syncthing:/data
-    networks:
-      macvlan_services:
-        ipv4_address: 10.0.20.50
+  # syncthing:
+  #   image: linuxserver/syncthing:latest
+  #   container_name: Syncthing
+  #   restart: unless-stopped
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=America/Los_Angeles
+  #   volumes:
+  #     - ./syncthing/config:/config
+  #     - /share/CACHEDEV1_DATA/Syncthing:/data
+  #   networks:
+  #     macvlan_services:
+  #       ipv4_address: 10.0.20.50
 
   watchtower:
     image: containrrr/watchtower:latest
@@ -146,9 +176,69 @@ services:
     restart: unless-stopped
     volumes:
       - ./uptime-kuma:/app/data
+    dns:              # ADD THIS
+      - 10.0.20.30
+      - 1.1.1.1
     networks:
       macvlan_services:
         ipv4_address: 10.0.20.61
+
+  # ============================================
+  # PHOTO MANAGEMENT - IMMICH
+  # ============================================
+  immich-server:
+    image: ghcr.io/immich-app/immich-server:release
+    container_name: immich-server
+    restart: unless-stopped
+    volumes:
+      - ./immich/upload:/usr/src/app/upload
+      - /share/CACHEDEV1_DATA/Multimedia/Pictures:/mnt/media/pictures:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - DB_HOSTNAME=immich-postgres
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_DATABASE_NAME=immich
+      - REDIS_HOSTNAME=immich-redis
+      - IMMICH_MACHINE_LEARNING_URL=http://immich-machine-learning:3003
+    depends_on:
+      - immich-redis
+      - immich-postgres
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.70
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:release
+    container_name: immich-machine-learning
+    restart: unless-stopped
+    volumes:
+      - ./immich/model-cache:/cache
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.71
+
+  immich-redis:
+    image: redis:7-alpine
+    container_name: immich-redis
+    restart: unless-stopped
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.72
+
+  immich-postgres:
+    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    container_name: immich-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: immich
+    volumes:
+      - ./immich/postgres:/var/lib/postgresql/data
+    networks:
+      macvlan_services:
+        ipv4_address: 10.0.20.73
 
 
 networks:
