@@ -276,21 +276,44 @@ This is expected behavior with macvlan. Containers cannot communicate with the h
 
 **Solutions:**
 
-1. **Setup macvlan shim** (see [NETWORK.md](NETWORK.md#macvlan-shim-optional))
+1. **Setup macvlan shim** - See [NETWORK.md](NETWORK.md#macvlan-shim-optional) for detailed step-by-step instructions
 2. **Access host services directly** without proxying through nginx
 3. **Move services to containers** if possible
+
+**Quick shim setup:**
+```bash
+# SSH into NAS
+ssh admin@10.0.20.196 -p 1022
+
+# Create shim (temporary - won't survive reboot)
+ip link add macvlan-shim link eth0 type macvlan mode bridge
+ip addr add 10.0.20.199/32 dev macvlan-shim
+ip link set macvlan-shim up
+ip route add 10.0.20.196/32 dev macvlan-shim
+```
 
 **Verify shim is working:**
 ```bash
 # Check if shim interface exists
 ip addr show macvlan-shim
 
-# Test connectivity
-ping 10.0.20.199
+# Test from container (should succeed)
+docker exec nginx-proxy-manager ping -c 2 10.0.20.199
 
-# From container
-docker exec nginx-proxy-manager ping 10.0.20.199
+# Test host service access from container
+docker exec nginx-proxy-manager curl -s -o /dev/null -w "%{http_code}" http://10.0.20.199:8080
 ```
+
+**Common shim issues:**
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| "File exists" error | Shim already exists | `ip link delete macvlan-shim` then recreate |
+| Ping works but curl fails | Host service not running | Check service: `curl http://10.0.20.196:8080` |
+| Shim gone after reboot | Not persistent | See [NETWORK.md](NETWORK.md#making-shim-persistent-on-qnap) for autorun setup |
+| "Cannot find device eth0" | Wrong interface name | Run `ip link show` to find correct name |
+
+For full troubleshooting details, see [NETWORK.md - Troubleshooting the Shim](NETWORK.md#troubleshooting-the-shim)
 
 ## Network Connectivity
 
