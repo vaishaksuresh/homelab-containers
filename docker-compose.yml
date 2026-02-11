@@ -36,6 +36,8 @@ services:
       echo 'macvlan shim created' &&
       tail -f /dev/null
       "
+    labels:
+      - wud.watch=false
 
   # ==========================================
   # MONITORING & UPDATES
@@ -53,20 +55,25 @@ services:
       macvlan_services:
         ipv4_address: 10.0.20.62
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock
       - ./wud:/store
+      - /share/CACHEDEV1_DATA/Container/docker-compose.yml:/wud/docker-compose.yml:ro
     environment:
       # Scan schedule (every 6 hours)
       - WUD_WATCHER_LOCAL_CRON=0 */6 * * *
-      
+
       # Web UI Authentication (disabled - enable if exposing publicly)
       # - WUD_AUTH_BASIC_USER=${WUD_AUTH_USER}
       # - WUD_AUTH_BASIC_HASH=${WUD_AUTH_HASH}
-      
+
       # Discord notifications (optional)
       - WUD_TRIGGER_DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - WUD_TRIGGER_DISCORD_WEBHOOK_MODE=simple
       - WUD_TRIGGER_DISCORD_WEBHOOK_ONCE=true
+
+      # Enable docker-compose trigger for manual updates
+      - WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_FILE=/wud/docker-compose.yml
+      - WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_MODE=simple
     labels:
       - wud.watch=false  # Don't monitor WUD itself
 
@@ -92,7 +99,7 @@ services:
 
   # Uptime Kuma - Service monitoring
   uptime-kuma:
-    image: louislam/uptime-kuma:1
+    image: louislam/uptime-kuma:latest
     container_name: uptime-kuma
     restart: unless-stopped
     dns: *default-dns
@@ -305,7 +312,7 @@ services:
       - wud.tag.include=^7-alpine$
 
   immich-postgres:
-    image: tensorchord/pgvecto-rs:pg14-v0.2.0
+    image: ghcr.io/immich-app/postgres:14-vectorchord0.4.3-pgvectors0.2.0
     container_name: immich-postgres
     restart: unless-stopped
     dns: *default-dns
@@ -320,6 +327,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=${IMMICH_DB_PASSWORD}
       - POSTGRES_DB=immich
+      - POSTGRES_INITDB_ARGS=--data-checksums
     labels:
       # WUD: Don't auto-update databases
       - wud.watch=true
