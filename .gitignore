@@ -1,4 +1,7 @@
-# Container data directories (too large for git)
+# Environment variables (contains secrets)
+.env
+
+# Container data directories (already exist, don't commit)
 adguardhome/
 pihole/
 nginx-proxy-manager/
@@ -9,23 +12,25 @@ watchtower/
 rustdesk/
 homarr/
 uptime-kuma/
+immich/
+wud/
 
 # Backup files
 backups/
-*.tar
 *.tar.gz
+*.zip
+
+# Logs
+*.log
 
 # Temporary files
-*.log
-*.tmp
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
-# Sensitive files
-*.key
-*.pem
-*password*
-
-# Keep directory structure
-!.gitkeep
-!*/
-!*/.gitkeep
+# IDE files
+.vscode/
+.idea/
+*.iml
