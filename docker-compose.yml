@@ -77,25 +77,25 @@ services:
     labels:
       - wud.watch=false  # Don't monitor WUD itself
 
-  # Watchtower - Auto-updater (can remove if using WUD exclusively)
-  watchtower:
-    image: containrrr/watchtower:latest
-    container_name: watchtower
-    restart: unless-stopped
-    dns: *default-dns
-    depends_on:
-      - macvlan-shim
-    networks:
-      macvlan_services:
-        ipv4_address: 10.0.20.254
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-    environment:
-      - WATCHTOWER_NOTIFICATION_URL=${DISCORD_WEBHOOK_URL}
-      - WATCHTOWER_CLEANUP=true
-      - WATCHTOWER_SCHEDULE=0 0 6 * * *
-    labels:
-      - wud.watch=false  # Don't monitor Watchtower
+  # Watchtower - Auto-updater (disabled - using WUD instead)
+  # watchtower:
+  #   image: containrrr/watchtower:latest
+  #   container_name: watchtower
+  #   restart: unless-stopped
+  #   dns: *default-dns
+  #   depends_on:
+  #     - macvlan-shim
+  #   networks:
+  #     macvlan_services:
+  #       ipv4_address: 10.0.20.254
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #   environment:
+  #     - WATCHTOWER_NOTIFICATION_URL=${DISCORD_WEBHOOK_URL}
+  #     - WATCHTOWER_CLEANUP=true
+  #     - WATCHTOWER_SCHEDULE=0 0 6 * * *
+  #   labels:
+  #     - wud.watch=false  # Don't monitor Watchtower
 
   # Uptime Kuma - Service monitoring
   uptime-kuma:
