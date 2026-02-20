@@ -1,6 +1,9 @@
 # Environment variables (contains secrets)
 .env
 
+# Claude Code context (contains network details)
+CLAUDE.md
+
 # Container data directories (already exist, don't commit)
 adguardhome/
 pihole/
