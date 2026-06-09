@@ -1,0 +1,56 @@
+---
+# K3s Cluster Setup
+# Run with: ansible-playbook -i inventory/hosts.yml site.yml
+
+# Step 1: Prepare all nodes
+- name: Common setup on all nodes
+  hosts: all
+  become: yes
+  roles:
+    - common
+
+# Step 2: Install K3s server on heimdall
+- name: Install K3s server (heimdall)
+  hosts: k3s_server
+  become: yes
+  roles:
+    - k3s_server
+
+# Step 3: Join agents to cluster
+- name: Install K3s agents (bestla, mimir)
+  hosts: k3s_agents
+  become: yes
+  roles:
+    - k3s_agent
+
+# Step 4: Set up NFS storage (runs on server only)
+- name: Set up NFS storage
+  hosts: k3s_server
+  become: yes
+  roles:
+    - nfs
+
+# Step 5: Verify cluster
+- name: Verify cluster is healthy
+  hosts: k3s_server
+  become: yes
+  tasks:
+    - name: Get node status
+      shell: kubectl get nodes -o wide
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: nodes_output
+
+    - name: Print cluster status
+      debug:
+        msg: "{{ nodes_output.stdout_lines }}"
+
+    - name: Get storage class
+      shell: kubectl get storageclass
+      environment:
+        KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+      register: sc_output
+
+    - name: Print storage classes
+      debug:
+        msg: "{{ sc_output.stdout_lines }}"

@@ -1,0 +1,60 @@
+---
+- name: Check if K3s server is already installed
+  stat:
+    path: /usr/local/bin/k3s
+  register: k3s_binary
+
+- name: Install K3s server
+  shell: |
+    curl -sfL https://get.k3s.io | sh -s - server \
+      --cluster-init \
+      --disable traefik \
+      --node-name {{ inventory_hostname }} \
+      --advertise-address {{ k3s_server_ip }} \
+      --write-kubeconfig-mode 644
+  environment:
+    INSTALL_K3S_VERSION: "{{ k3s_version }}"
+  when: not k3s_binary.stat.exists
+
+- name: Wait for K3s to be ready
+  wait_for:
+    port: 6443
+    host: "{{ k3s_server_ip }}"
+    timeout: 120
+
+- name: Wait for node to be ready
+  shell: kubectl get nodes | grep "{{ inventory_hostname }}" | grep " Ready"
+  register: node_ready
+  retries: 10
+  delay: 10
+  until: node_ready.rc == 0
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+
+- name: Get K3s node token
+  slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: k3s_token_raw
+
+- name: Set K3s token fact
+  set_fact:
+    k3s_token: "{{ k3s_token_raw.content | b64decode | trim }}"
+
+- name: Share token with agents
+  add_host:
+    name: "{{ item }}"
+    k3s_token: "{{ k3s_token }}"
+  loop: "{{ groups['k3s_agents'] }}"
+
+- name: Fetch kubeconfig to Mac
+  fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: /tmp/k3s-kubeconfig
+    flat: yes
+
+- name: Fix kubeconfig server address
+  local_action:
+    module: replace
+    path: /tmp/k3s-kubeconfig
+    regexp: 'https://127.0.0.1:6443'
+    replace: "https://{{ k3s_server_ip }}:6443"

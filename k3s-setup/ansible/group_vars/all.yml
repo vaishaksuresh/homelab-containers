@@ -1,0 +1,13 @@
+# K3s version - check latest at https://github.com/k3s-io/k3s/releases
+k3s_version: "v1.29.1+k3s1"
+
+# K3s server details
+k3s_server_ip: "10.0.20.160"
+k3s_server_port: "6443"
+
+# NFS storage
+nfs_server: "10.0.20.196"
+nfs_path: "/CACHEDEV1_DATA/k3s-storage"
+
+# Kubeconfig location on your Mac
+local_kubeconfig_path: "~/.kube/config"
