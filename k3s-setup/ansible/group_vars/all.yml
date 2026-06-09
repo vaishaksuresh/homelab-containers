@@ -6,8 +6,8 @@ k3s_server_ip: "10.0.20.160"
 k3s_server_port: "6443"
 
 # NFS storage
-nfs_server: "10.0.20.196"
-nfs_path: "/CACHEDEV1_DATA/k3s-storage"
+nfs_server: "10.0.15.15"
+nfs_path: "/var/nfs/shared/k3sstorage"
 
 # Kubeconfig location on your Mac
 local_kubeconfig_path: "~/.kube/config"
