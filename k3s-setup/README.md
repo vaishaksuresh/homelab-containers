@@ -7,7 +7,7 @@
 | bestla | 10.0.20.161 | K3s agent (worker) |
 | mimir | 10.0.20.162 | K3s agent (worker) |
 
-**NFS Storage:** QNAP NAS at 10.0.20.196
+**NFS Storage:** UniFi drive at 10.0.15.15
 
 ---
 
@@ -79,27 +79,21 @@ brew install cloud-utils  # if available, or use manual method
 
 ---
 
-## Step 2: Prepare QNAP NFS Share
+## Step 2: Prepare UniFi NFS Share
+
+Ensure the NFS share on the UniFi drive (10.0.15.15) is exported and accessible:
 
 ```bash
-# SSH into NAS
-ssh admin@10.0.20.196 -p 1022
-
-# Create storage directory
-mkdir -p /share/CACHEDEV1_DATA/k3s-storage
-
-# Enable NFS in QNAP UI:
-# Control Panel > Network & File Services > NFS Service > Enable NFS
-# Set quota on folder if desired (Control Panel > Privilege > Shared Folders)
+# Verify NFS export is reachable from any node
+showmount -e 10.0.15.15
 ```
 
-**Add NFS export in QNAP UI:**
-1. File Station → right-click `k3s-storage` → Properties → NFS Host Access
-2. Add rule:
-   - Hostname/IP: `10.0.20.0/24`
-   - Access right: Read/Write
-   - Squash: No squash
-   - Security: sys
+The NFS path used is:
+```
+/volume/3ac9efb3-390c-47d2-a9f5-e0e04418172b/.srv/.unifi-drive/k3sstorage/.data
+```
+
+Ensure the export allows `10.0.20.0/24` with read/write access.
 
 ---
 

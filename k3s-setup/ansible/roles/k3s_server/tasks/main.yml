@@ -53,8 +53,9 @@
     flat: yes
 
 - name: Fix kubeconfig server address
-  local_action:
-    module: replace
+  ansible.builtin.replace:
     path: /tmp/k3s-kubeconfig
     regexp: 'https://127.0.0.1:6443'
     replace: "https://{{ k3s_server_ip }}:6443"
+  delegate_to: localhost
+  become: false
