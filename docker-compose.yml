@@ -57,7 +57,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./wud:/store
-      - /share/CACHEDEV1_DATA/Container/docker-compose.yml:/wud/docker-compose.yml:ro
+      - ./wud/docker-compose.yml:/wud/docker-compose.yml
     environment:
       # Scan schedule (every 6 hours)
       - WUD_WATCHER_LOCAL_CRON=0 */6 * * *
@@ -73,7 +73,7 @@ services:
 
       # Enable docker-compose trigger for manual updates
       - WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_FILE=/wud/docker-compose.yml
-      - WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_MODE=simple
+      - WUD_TRIGGER_DOCKERCOMPOSE_LOCAL_MODE=batch
     labels:
       - wud.watch=false  # Don't monitor WUD itself
 
@@ -233,7 +233,7 @@ services:
 
   # Homarr - Homelab dashboard
   homarr:
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:latest
     container_name: homarr
     restart: unless-stopped
     dns: *default-dns
@@ -246,6 +246,8 @@ services:
       - ./homarr/configs:/app/data/configs
       - ./homarr/icons:/app/public/icons
       - ./homarr/data:/data
+    environment:
+      - SECRET_ENCRYPTION_KEY=${HOMARR_SECRET_ENCRYPTION_KEY}
     labels:
       # WUD: Auto-update
       - wud.watch=true
