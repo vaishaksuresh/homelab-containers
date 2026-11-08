@@ -1,0 +1,6 @@
+# Flink Kubernetes Operator 1.16.1 (supports k8s >= 1.21). Requires cert-manager for the webhook.
+watchNamespaces: ["flink"]
+operatorPod:
+  resources:
+    requests: {cpu: 100m, memory: 512Mi}
+    limits: {memory: 1Gi}
