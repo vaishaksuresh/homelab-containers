@@ -15,14 +15,25 @@
 
 ### Generate password hash (on your Mac)
 ```bash
-python3 -c "import crypt; print(crypt.crypt('yourpassword', crypt.mksalt(crypt.METHOD_SHA512)))"
+# (Python's crypt module was removed in Python 3.13; use openssl instead)
+openssl passwd -6    # prompts for the password, prints a $6$... SHA-512 hash
 ```
 
 ### Get your SSH public key
 ```bash
-cat ~/.ssh/id_rsa.pub
-# If you don't have one: ssh-keygen -t rsa -b 4096
+cat ~/.ssh/id_ed25519.pub
+# If you don't have one: ssh-keygen -t ed25519
 ```
+
+> The nodes only accept SSH keys (password auth is off). Every machine that should reach
+> them needs its public key in `~vaishak/.ssh/authorized_keys` on all three nodes, and in
+> the autoinstall `user-data` files so reinstalls keep it. Ansible uses
+> `ansible_ssh_private_key_file` in `ansible/inventory/hosts.yml`; point it at the key you
+> actually have (it defaults to `~/.ssh/id_rsa`).
+>
+> To add a new machine: copy its `~/.ssh/id_ed25519.pub` to a machine that already has
+> access, then from there run (for `.160`, `.161` and `.162`):
+> `ssh vaishak@10.0.20.160 'cat >> ~/.ssh/authorized_keys' < new-machine.pub`
 
 ### Edit each user-data file
 Fill in `REPLACE_WITH_HASHED_PASSWORD` and `REPLACE_WITH_YOUR_PUBLIC_KEY` in:
@@ -121,10 +132,30 @@ ansible-playbook -i inventory/hosts.yml site.yml --limit heimdall
 
 ## Step 4: Configure kubectl on Mac
 
+The kubeconfig is the cluster-admin credential. Never commit it (it's in `.gitignore`).
+
+Ansible fetches it to `/tmp/k3s-kubeconfig`, but macOS clears `/tmp` on reboot, so copy it
+right after the playbook runs. ⚠️ `cp` **overwrites** an existing `~/.kube/config`; if you
+already have one, merge instead (or keep it as a separate file and set `KUBECONFIG`).
+
 ```bash
-# Ansible fetches kubeconfig to /tmp/k3s-kubeconfig
-# Copy to your .kube directory
-cp /tmp/k3s-kubeconfig ~/.kube/config
+mkdir -p ~/.kube && chmod 700 ~/.kube
+if [ -e ~/.kube/config ]; then echo "~/.kube/config exists; merge instead"
+else cp /tmp/k3s-kubeconfig ~/.kube/config && chmod 600 ~/.kube/config; fi
+```
+
+Without Ansible (e.g. from a new machine), copy it straight from heimdall. k3s writes it
+with mode 644, so no sudo is needed:
+
+```bash
+scp vaishak@10.0.20.160:/etc/rancher/k3s/k3s.yaml ~/.kube/config
+sed -i '' 's#https://127.0.0.1:6443#https://10.0.20.160:6443#' ~/.kube/config   # macOS sed
+chmod 600 ~/.kube/config
+```
+
+The API cert's SANs include `10.0.20.160` and `heimdall`, so either works as the server.
+
+```bash
 
 # Install kubectl and k9s
 brew install kubectl k9s

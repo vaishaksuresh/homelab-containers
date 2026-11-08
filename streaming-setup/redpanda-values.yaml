@@ -1,0 +1,32 @@
+# Redpanda chart 26.2.5 (Redpanda v26.2.6): single broker, homelab, in-cluster only.
+statefulset:
+  replicas: 1
+tls:
+  enabled: false        # plaintext in-cluster
+auth:
+  sasl:
+    enabled: false
+external:
+  enabled: false        # no NodePort; use port-forward
+resources:
+  cpu:
+    cores: 1
+    overprovisioned: true   # don't pin a dedicated core on a shared node
+  memory:
+    container:
+      max: 2Gi
+storage:
+  persistentVolume:
+    enabled: true
+    size: 10Gi
+    storageClass: local-path   # set explicitly; cluster has two "default" classes
+config:
+  cluster:
+    default_topic_replications: 1
+    # Community Edition only (no license): turn off the enterprise features the
+    # built-in 30-day trial enables by default, so nothing is restricted at expiry
+    # and feature upgrades aren't blocked.
+    partition_autobalancing_mode: node_add
+    core_balancing_continuous: false
+console:
+  enabled: true

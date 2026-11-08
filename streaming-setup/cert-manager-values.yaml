@@ -1,0 +1,11 @@
+# cert-manager v1.21.3 (supports k8s 1.33-1.36). Needed by the Flink operator webhook.
+crds:
+  enabled: true
+resources:
+  requests: {cpu: 10m, memory: 64Mi}
+webhook:
+  resources:
+    requests: {cpu: 10m, memory: 32Mi}
+cainjector:
+  resources:
+    requests: {cpu: 10m, memory: 64Mi}

@@ -37,3 +37,17 @@ Thumbs.db
 .vscode/
 .idea/
 *.iml
+
+# Cluster credentials and API tokens (never commit)
+kubeconfig
+*kubeconfig*
+k3s.yaml
+.kube/
+*.token
+*token*.txt
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+id_ed25519*
