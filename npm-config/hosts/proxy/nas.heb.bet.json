@@ -1,0 +1,22 @@
+{
+  "access_list": null,
+  "advanced_config": "proxy_set_header Host $host;\nproxy_set_header X-Real-IP $remote_addr;\nproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\nproxy_set_header X-Forwarded-Proto $scheme;\nproxy_set_header X-Forwarded-Host $host;\n\n# QNAP specific - pass the original host\nproxy_set_header Upgrade $http_upgrade;\nproxy_set_header Connection \"upgrade\";",
+  "allow_websocket_upgrade": true,
+  "block_exploits": true,
+  "caching_enabled": true,
+  "certificate": [
+    "*.heb.bet"
+  ],
+  "domain_names": [
+    "nas.heb.bet"
+  ],
+  "enabled": true,
+  "forward_host": "10.0.20.199",
+  "forward_port": 8080,
+  "forward_scheme": "http",
+  "hsts_enabled": false,
+  "hsts_subdomains": false,
+  "http2_support": true,
+  "locations": [],
+  "ssl_forced": true
+}

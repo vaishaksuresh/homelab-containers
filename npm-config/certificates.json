@@ -1,0 +1,24 @@
+[
+  {
+    "dns_challenge": true,
+    "dns_provider": "cloudflare",
+    "domain_names": [
+      "*.heb.bet"
+    ],
+    "expires_on": "2027-01-27 22:52:34",
+    "nice_name": "*.heb.bet",
+    "provider": "letsencrypt"
+  },
+  {
+    "dns_challenge": true,
+    "dns_provider": "cloudflare",
+    "domain_names": [
+      "*.homelab.heb.bet",
+      "homelab.heb.bet"
+    ],
+    "expires_on": "2027-01-27 21:54:38",
+    "nice_name": "homelab.heb.bet, *.homelab.heb.bet",
+    "propagation_seconds": 120,
+    "provider": "letsencrypt"
+  }
+]

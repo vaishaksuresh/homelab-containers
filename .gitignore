@@ -51,3 +51,7 @@ k3s.yaml
 *.key
 id_rsa*
 id_ed25519*
+
+# NPM bootstrap secrets (keep outside the repo; never commit)
+*secrets*.json
+!*secrets.example.json

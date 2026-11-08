@@ -1,0 +1,22 @@
+{
+  "access_list": null,
+  "advanced_config": "# Plex specific headers\nproxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;\nproxy_set_header X-Plex-Device $http_x_plex_device;\nproxy_set_header X-Plex-Device-Name $http_x_plex_device_name;\nproxy_set_header X-Plex-Platform $http_x_plex_platform;\nproxy_set_header X-Plex-Platform-Version $http_x_plex_platform_version;\nproxy_set_header X-Plex-Product $http_x_plex_product;\nproxy_set_header X-Plex-Token $http_x_plex_token;\nproxy_set_header X-Plex-Version $http_x_plex_version;\nproxy_set_header X-Plex-Nocache $http_x_plex_nocache;\nproxy_set_header X-Plex-Provides $http_x_plex_provides;\nproxy_set_header X-Plex-Device-Vendor $http_x_plex_device_vendor;\nproxy_set_header X-Plex-Model $http_x_plex_model;\n\n# Standard proxy headers\nproxy_set_header Host $host;\nproxy_set_header X-Real-IP $remote_addr;\nproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\nproxy_set_header X-Forwarded-Proto $scheme;\nproxy_set_header Upgrade $http_upgrade;\nproxy_set_header Connection \"upgrade\";\n\n# Buffering\nproxy_redirect off;\nproxy_buffering off;",
+  "allow_websocket_upgrade": true,
+  "block_exploits": false,
+  "caching_enabled": false,
+  "certificate": [
+    "*.heb.bet"
+  ],
+  "domain_names": [
+    "plex.heb.bet"
+  ],
+  "enabled": true,
+  "forward_host": "10.0.20.199",
+  "forward_port": 32400,
+  "forward_scheme": "http",
+  "hsts_enabled": false,
+  "hsts_subdomains": false,
+  "http2_support": true,
+  "locations": [],
+  "ssl_forced": true
+}

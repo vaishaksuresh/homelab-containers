@@ -1,0 +1,22 @@
+{
+  "access_list": null,
+  "advanced_config": "",
+  "allow_websocket_upgrade": false,
+  "block_exploits": false,
+  "caching_enabled": false,
+  "certificate": [
+    "*.heb.bet"
+  ],
+  "domain_names": [
+    "adguard.heb.bet"
+  ],
+  "enabled": true,
+  "forward_host": "10.0.20.30",
+  "forward_port": 80,
+  "forward_scheme": "http",
+  "hsts_enabled": false,
+  "hsts_subdomains": false,
+  "http2_support": true,
+  "locations": [],
+  "ssl_forced": true
+}

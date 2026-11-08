@@ -1,0 +1,30 @@
+{
+  "access_list": null,
+  "advanced_config": "",
+  "allow_websocket_upgrade": false,
+  "block_exploits": false,
+  "caching_enabled": false,
+  "certificate": [
+    "*.heb.bet"
+  ],
+  "domain_names": [
+    "uptime.heb.bet"
+  ],
+  "enabled": true,
+  "forward_host": "10.0.20.61",
+  "forward_port": 3001,
+  "forward_scheme": "http",
+  "hsts_enabled": false,
+  "hsts_subdomains": false,
+  "http2_support": true,
+  "locations": [
+    {
+      "advanced_config": "",
+      "forward_host": "10.0.20.61/status/homelab",
+      "forward_port": 3001,
+      "forward_scheme": "http",
+      "path": "https://status.heb.bet/status/homelab"
+    }
+  ],
+  "ssl_forced": true
+}
