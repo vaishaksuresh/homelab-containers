@@ -23,5 +23,10 @@ storage:
 config:
   cluster:
     default_topic_replications: 1
+    # Community Edition only (no license): turn off the enterprise features the
+    # built-in 30-day trial enables by default, so nothing is restricted at expiry
+    # and feature upgrades aren't blocked.
+    partition_autobalancing_mode: node_add
+    core_balancing_continuous: false
 console:
   enabled: true
