@@ -65,9 +65,21 @@ docker compose ps
 
 ### DNS Configuration
 
-Point your DHCP server to use AdGuard as primary DNS:
+Point your DHCP server at the internal resolvers only:
 - Primary DNS: `10.0.20.30` (AdGuard)
-- Secondary DNS: `1.1.1.1` (Cloudflare fallback)
+- Secondary DNS: `10.0.20.31` (Pi-hole), **not** a public resolver
+
+> ⚠️ Don't hand out `1.1.1.1` / `8.8.8.8` via DHCP. Public resolvers return NXDOMAIN for
+> `*.heb.bet`, and macOS 27 goes further: when `1.1.1.1` is in the DHCP list it discovers
+> Cloudflare's encrypted resolver (DDR) and silently sends **all** queries over DoH to
+> `one.one.one.one`, bypassing AdGuard entirely. `dig` still works (it queries 10.0.20.30
+> directly), but browsers, `curl` and `dscacheutil` fail. On each Mac, also pin the internal
+> domain to AdGuard (see [TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md#macos-hebbet-fails-but-dig-works)):
+>
+> ```bash
+> sudo mkdir -p /etc/resolver && echo "nameserver 10.0.20.30" | sudo tee /etc/resolver/heb.bet
+> sudo killall -HUP mDNSResponder
+> ```
 
 In AdGuard, configure DNS rewrites for internal domains:
 - `*.heb.bet` → `10.0.20.200` (nginx proxy manager)

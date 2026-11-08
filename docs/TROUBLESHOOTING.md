@@ -2,6 +2,30 @@
 
 ## DNS Resolution Issues
 
+### macOS: `*.heb.bet` fails but `dig` works
+
+Symptom: `dig redpanda.heb.bet` returns `10.0.20.200`, but browsers, `curl` and
+`dscacheutil -q host -a name redpanda.heb.bet` fail ("nodename nor servname provided").
+
+Cause (seen on macOS 27.2): `1.1.1.1` is in the DHCP DNS list, Cloudflare advertises an
+encrypted resolver via DDR (`dig @1.1.1.1 _dns.resolver.arpa type64`), and mDNSResponder
+upgrades to DoH (`one.one.one.one:443`) for everything. Cloudflare answers NXDOMAIN for
+internal names. `dig` bypasses this because it sends plain DNS to the first server.
+
+Confirm:
+```bash
+dns-sd -G v4 redpanda.heb.bet          # "No Such Record" => the system path is broken
+/usr/bin/log show --last 5m --info --predicate 'process == "mDNSResponder"' | grep "over HTTPS"
+```
+
+Fix (per Mac): a per-domain resolver that always uses AdGuard:
+```bash
+sudo mkdir -p /etc/resolver && echo "nameserver 10.0.20.30" | sudo tee /etc/resolver/heb.bet
+sudo killall -HUP mDNSResponder
+scutil --dns | grep -A3 "domain   : heb.bet"   # should list 10.0.20.30
+```
+Better (whole LAN): remove public resolvers from the UniFi DHCP DNS list.
+
 ### Problem: Can't resolve `*.heb.bet` domains
 
 **Check DNS server in use:**
