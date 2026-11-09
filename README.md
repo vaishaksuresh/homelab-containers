@@ -84,6 +84,15 @@ Point your DHCP server at the internal resolvers only:
 In AdGuard, configure DNS rewrites for internal domains:
 - `*.heb.bet` → `10.0.20.200` (nginx proxy manager)
 
+### Secrets
+
+No secrets are committed to this repo; they're supplied at rebuild time.
+- **Where they go:** real values go in `.env` (from `.env.example`) and in files outside the
+  repo, such as the NPM bootstrap secrets (see [npm-config/README.md](npm-config/README.md)).
+- **Templates:** only placeholder templates (`*.example`) are committed.
+- **Commit-time check:** enable it once per clone with
+  `git config core.hooksPath .githooks`. It runs `scripts/check-secrets.py` on every commit.
+
 ### SSL Certificates
 
 nginx Proxy Manager handles SSL termination for all services:

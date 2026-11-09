@@ -1,0 +1,22 @@
+{
+  "access_list": null,
+  "advanced_config": "proxy_set_header Upgrade $http_upgrade;\nproxy_set_header Connection \"upgrade\";\nproxy_set_header Host $host;\nproxy_set_header X-Real-IP $remote_addr;\nproxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;\nproxy_set_header X-Forwarded-Proto $scheme;",
+  "allow_websocket_upgrade": true,
+  "block_exploits": false,
+  "caching_enabled": false,
+  "certificate": [
+    "*.heb.bet"
+  ],
+  "domain_names": [
+    "homeassistant.heb.bet"
+  ],
+  "enabled": true,
+  "forward_host": "10.0.20.123",
+  "forward_port": 8123,
+  "forward_scheme": "http",
+  "hsts_enabled": true,
+  "hsts_subdomains": false,
+  "http2_support": true,
+  "locations": [],
+  "ssl_forced": true
+}
