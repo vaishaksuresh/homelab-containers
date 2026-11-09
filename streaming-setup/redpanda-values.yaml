@@ -1,6 +1,19 @@
-# Redpanda chart 26.2.5 (Redpanda v26.2.6): single broker, homelab, in-cluster only.
+# Redpanda chart 26.2.5 (Redpanda v26.2.6): 3 brokers, one per k3s node, in-cluster only.
 statefulset:
-  replicas: 1
+  replicas: 3
+  budget:
+    maxUnavailable: 1          # PDB: at most one broker down at a time (RF=3 keeps a majority)
+  podTemplate:
+    spec:
+      affinity:
+        podAntiAffinity:       # one broker per node: heimdall, bestla, mimir (required, not preferred)
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - topologyKey: kubernetes.io/hostname
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: redpanda-statefulset
+                  app.kubernetes.io/instance: redpanda
+                  app.kubernetes.io/name: redpanda
 tls:
   enabled: false        # plaintext in-cluster
 auth:
@@ -14,15 +27,17 @@ resources:
     overprovisioned: true   # don't pin a dedicated core on a shared node
   memory:
     container:
-      max: 2Gi
+      max: 2Gi                 # per broker; 3 x (1 core, 2Gi) fits easily on 3 x (4 CPU, 15Gi)
 storage:
   persistentVolume:
     enabled: true
-    size: 10Gi
+    size: 10Gi                 # per broker, node-local (local-path)
     storageClass: local-path   # set explicitly; cluster has two "default" classes
 config:
   cluster:
-    default_topic_replications: 1
+    default_topic_replications: 3      # new topics get RF=3
+    minimum_topic_replications: 3      # reject creating topics with RF<3
+    internal_topic_replication_factor: 3
     # Community Edition only (no license): turn off the enterprise features the
     # built-in 30-day trial enables by default, so nothing is restricted at expiry
     # and feature upgrades aren't blocked.
