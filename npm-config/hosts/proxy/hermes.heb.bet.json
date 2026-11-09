@@ -8,7 +8,7 @@
     "*.heb.bet"
   ],
   "domain_names": [
-    "heremes.heb.bet"
+    "hermes.heb.bet"
   ],
   "enabled": true,
   "forward_host": "10.0.15.248",
